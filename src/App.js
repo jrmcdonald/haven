@@ -9,12 +9,14 @@ class PartyDetails extends Component {
   constructor(props) {
     super();
 
+    this.mapReputationOptions = this.mapReputationOptions.bind(this);
+
+    this.updateLocalStorage = this.updateLocalStorage.bind(this);
+
     this.handleReputationChange = this.handleReputationChange.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
     this.handleNotesChange = this.handleNotesChange.bind(this);
-
-    this.mapReputationOptions = this.mapReputationOptions.bind(this);
 
     this.state = {
       defaults: {
@@ -70,14 +72,21 @@ class PartyDetails extends Component {
         achievements: []
       }
     }
+
+    const cachedParty = localStorage.getItem('party');
+    if (cachedParty) {
+      this.state.party = JSON.parse(cachedParty);
+    }
   }
 
-  handleReputationChange = (event) => { this.setState({ party: { ...this.state.party, reputation: event.target.value } }) };
-  handleNameChange = (event) => { this.setState({ party: { ...this.state.party, name: event.target.value } }) };
-  handleLocationChange = (event) => { this.setState({ party: { ...this.state.party, location: event.target.value } }) };
-  handleNotesChange = (event) => { this.setState({ party: { ...this.state.party, notes: event.target.value } }) };
-  
   mapReputationOptions = item => ( <option key={item.key} value={item.key}>{item.key}</option> );
+
+  updateLocalStorage = () => { localStorage.setItem('party', JSON.stringify(this.state.party)) };
+
+  handleReputationChange = (event) => this.setState({ party: { ...this.state.party, reputation: event.target.value } }, () => this.updateLocalStorage());
+  handleNameChange = (event) => this.setState({ party: { ...this.state.party, name: event.target.value } }, () => this.updateLocalStorage());
+  handleLocationChange = (event) => this.setState({ party: { ...this.state.party, location: event.target.value } }, () => this.updateLocalStorage());
+  handleNotesChange = (event) => this.setState({ party: { ...this.state.party, notes: event.target.value } }, () => this.updateLocalStorage());
 
   render() {
     return (
@@ -107,8 +116,8 @@ class PartyDetails extends Component {
                 <input type="text" name="modifier" id="modifier" className="form-control" disabled value={this.state.defaults.reputation.find(o => o.key === this.state.party.reputation).value} />
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group col-md-12">
+            <div className="form-row">
+              <div className="form-group col-md-12">
                 <label htmlFor="notes">Notes:</label>
                 <textarea name="notes" id="notes" className="form-control" value={this.state.party.notes} onChange={this.handleNotesChange} />
               </div>
