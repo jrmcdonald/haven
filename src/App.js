@@ -12,6 +12,8 @@ class PartyDetails extends Component {
     this.handleReputationChange = this.handleReputationChange.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
+    this.handleNotesChange = this.handleNotesChange.bind(this);
+
     this.mapReputationOptions = this.mapReputationOptions.bind(this);
 
     this.state = {
@@ -73,6 +75,7 @@ class PartyDetails extends Component {
   handleReputationChange = (event) => { this.setState({ party: { ...this.state.party, reputation: event.target.value } }) };
   handleNameChange = (event) => { this.setState({ party: { ...this.state.party, name: event.target.value } }) };
   handleLocationChange = (event) => { this.setState({ party: { ...this.state.party, location: event.target.value } }) };
+  handleNotesChange = (event) => { this.setState({ party: { ...this.state.party, notes: event.target.value } }) };
   
   mapReputationOptions = item => ( <option key={item.key} value={item.key}>{item.key}</option> );
 
@@ -102,6 +105,12 @@ class PartyDetails extends Component {
               <div className="form-group col-md-6">
                 <label htmlFor="modifier">Shop Price Modifier:</label>
                 <input type="text" name="modifier" id="modifier" className="form-control" disabled value={this.state.defaults.reputation.find(o => o.key === this.state.party.reputation).value} />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label htmlFor="notes">Notes:</label>
+                <textarea name="notes" id="notes" className="form-control" value={this.state.party.notes} onChange={this.handleNotesChange} />
               </div>
             </div>
           </form>
