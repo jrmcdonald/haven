@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './App.css';
 
 class App extends Component {
-  render() { return <PartyDetails /> };
+  render() { return <PartyDetails /> }
 }
 
 class PartyDetails extends Component {
-  constructor(props) {
+  constructor() {
     super();
-
-    this.mapReputationOptions = this.mapReputationOptions.bind(this);
-    this.mapAchievements = this.mapAchievements.bind(this);
 
     this.updateLocalStorage = this.updateLocalStorage.bind(this);
 
@@ -84,9 +82,6 @@ class PartyDetails extends Component {
     }
   }
 
-  mapReputationOptions = item => ( <option key={item.key} value={item.key}>{item.key}</option> );
-  mapAchievements = item => ( <li className="list-group-item clearfix" key={item}>{item}<span className="float-right"><span className="btn btn-xs btn-default" onClick={() => this.handleAchievementDelete(item)}><i class="far fa-trash-alt" aria-hidden="true"></i></span></span></li> );
-
   updateLocalStorage = () => { localStorage.setItem('party', JSON.stringify(this.state.party)) };
 
   handleReputationChange = event => this.setState({ party: { ...this.state.party, reputation: event.target.value } }, () => this.updateLocalStorage());
@@ -95,8 +90,8 @@ class PartyDetails extends Component {
   handleNotesChange = event => this.setState({ party: { ...this.state.party, notes: event.target.value } }, () => this.updateLocalStorage());
 
   handleAchievementInputChange = event => this.setState({ achievement: event.target.value });
-  handleAchievementAdd = event => this.setState({ party: { ...this.state.party, achievements: this.state.party.achievements.concat([this.state.achievement]) } }, () => this.updateLocalStorage());
-  handleAchievementDelete = item => this.setState({ party: { ...this.state.party, achievements: this.state.party.achievements.filter(el => el != item) } }, () => this.updateLocalStorage());
+  handleAchievementAdd = () => this.setState({ party: { ...this.state.party, achievements: this.state.party.achievements.concat([this.state.achievement]) } }, () => this.updateLocalStorage());
+  handleAchievementDelete = item => this.setState({ party: { ...this.state.party, achievements: this.state.party.achievements.filter(el => el !== item) } }, () => this.updateLocalStorage());
 
   render() {
     return (
@@ -118,12 +113,12 @@ class PartyDetails extends Component {
               <div className="form-group col-md-6">
                 <label htmlFor="reputation">Reputation:</label>
                 <select id="reputation" name="reputation" className="form-control" onChange={this.handleReputationChange} value={this.state.party.reputation}>
-                  {this.state.defaults.reputation.map(this.mapReputationOptions)}
+                  {this.state.defaults.reputation.map(item => <ReputationOption key={item.key} item={item} />)}
                 </select>
               </div>
               <div className="form-group col-md-6">
                 <label htmlFor="modifier">Shop Price Modifier:</label>
-                <input type="text" name="modifier" id="modifier" className="form-control" readonly value={this.state.defaults.reputation.find(o => o.key === this.state.party.reputation).value} />
+                <input type="text" name="modifier" id="modifier" className="form-control" readOnly value={this.state.defaults.reputation.find(o => o.key === this.state.party.reputation).value} />
               </div>
             </div>
             <div className="form-row">
@@ -143,7 +138,7 @@ class PartyDetails extends Component {
                 <div className="card">
                   <div className="card-header">Party Achievements</div>
                   <ul className="list-group list-group-flush">
-                    {this.state.party.achievements.map(this.mapAchievements)}
+                    {this.state.party.achievements.map(achievement => <AchievementElement key={achievement} achievement={achievement} deleteHandler={this.handleAchievementDelete} />)}
                   </ul>
                 </div>
               </div>
@@ -153,6 +148,28 @@ class PartyDetails extends Component {
       </div>
     );
   }
+}
+
+const ReputationOption = ({ item }) => ( <option value={item.key}>{item.key}</option> );
+
+const AchievementElement = ({ deleteHandler, achievement }) => (
+  <li className="list-group-item clearfix">
+      {achievement}
+      <span className="float-right">
+        <span className="btn btn-xs btn-default" onClick={() => deleteHandler(achievement)}>
+          <i className="far fa-trash-alt" aria-hidden="true"></i>
+        </span>
+      </span>
+  </li>
+);
+
+ReputationOption.propTypes = {
+  item: PropTypes.array.isRequired
+}
+
+AchievementElement.propTypes = {
+  deleteHandler: PropTypes.func.isRequired,
+  achievement: PropTypes.string.isRequired
 }
 
 export default App;
