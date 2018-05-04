@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+import { defaults }  from './defaults.json';
+
 import './App.css';
 
 class App extends Component {
@@ -17,63 +20,19 @@ class PartyDetails extends Component {
     this.handleLocationChange = this.handleLocationChange.bind(this);
     this.handleNotesChange = this.handleNotesChange.bind(this);
 
-    this.handleAchievementInputChange = this.handleAchievementInputChange.bind(this);
+    this.handleAchievementChange = this.handleAchievementChange.bind(this);
     this.handleAchievementAdd = this.handleAchievementAdd.bind(this);
     this.handleAchievementDelete = this.handleAchievementDelete.bind(this);
 
     this.state = {
-      defaults: {
-        reputation: [
-          { key: '+20', value: '-5' },
-          { key: '+19', value: '-5' },
-          { key: '+18', value: '-4' },
-          { key: '+17', value: '-4' },
-          { key: '+16', value: '-4' },
-          { key: '+15', value: '-4' },
-          { key: '+14', value: '-3' },
-          { key: '+13', value: '-3' },
-          { key: '+12', value: '-3' },
-          { key: '+11', value: '-3' },
-          { key: '+10', value: '-2' },
-          { key: '+9', value: '-2' },
-          { key: '+8', value: '-2' },
-          { key: '+7', value: '-2' },
-          { key: '+6', value: '-1' },
-          { key: '+5', value: '-1' },
-          { key: '+4', value: '-1' },
-          { key: '+3', value: '-1' },
-          { key: '+2', value: 'None' },
-          { key: '+1', value: 'None' },
-          { key: '0', value: 'None' },
-          { key: '-1', value: 'None' },
-          { key: '-2', value: 'None' },
-          { key: '-3', value: '+1' },
-          { key: '-4', value: '+1' },
-          { key: '-5', value: '+1' },
-          { key: '-6', value: '+1' },
-          { key: '-7', value: '+2' },
-          { key: '-8', value: '+2' },
-          { key: '-9', value: '+2' },
-          { key: '-10', value: '+2' },
-          { key: '-11', value: '+3' },
-          { key: '-12', value: '+3' },
-          { key: '-13', value: '+3' },
-          { key: '-14', value: '+3' },
-          { key: '-15', value: '+4' },
-          { key: '-16', value: '+4' },
-          { key: '-17', value: '+4' },
-          { key: '-18', value: '+4' },
-          { key: '-19', value: '+5' },
-          { key: '-20', value: '+5' },
-        ]
-      },
       party: {
         name: '',
         location: '',
         reputation: '0',
         notes: '',
         achievements: []
-      }
+      },
+      achievement: ''
     }
 
     const cachedParty = localStorage.getItem('party');
@@ -89,9 +48,32 @@ class PartyDetails extends Component {
   handleLocationChange = event => this.setState({ party: { ...this.state.party, location: event.target.value } }, () => this.updateLocalStorage());
   handleNotesChange = event => this.setState({ party: { ...this.state.party, notes: event.target.value } }, () => this.updateLocalStorage());
 
-  handleAchievementInputChange = event => this.setState({ achievement: event.target.value });
-  handleAchievementAdd = () => this.setState({ party: { ...this.state.party, achievements: this.state.party.achievements.concat([this.state.achievement]) } }, () => this.updateLocalStorage());
-  handleAchievementDelete = item => this.setState({ party: { ...this.state.party, achievements: this.state.party.achievements.filter(el => el !== item) } }, () => this.updateLocalStorage());
+  handleAchievementChange = e => { 
+    if (e.detail === 0) {
+      this.setState({ achievement: e.target.value });
+    }
+  }
+
+  handleAchievementAdd = () => {
+    this.setState({ 
+      party: { 
+        ...this.state.party, 
+        achievements: this.state.party.achievements.concat([this.state.achievement])
+      } 
+    }, () => {
+      this.updateLocalStorage(); 
+      this.setState({ achievement: '' });
+    });
+  }
+
+  handleAchievementDelete = achievement => {
+    this.setState({ 
+      party: { 
+        ...this.state.party, 
+        achievements: this.state.party.achievements.filter(x => x !== achievement) 
+      } 
+    }, () => this.updateLocalStorage());
+  }
 
   render() {
     return (
@@ -113,12 +95,12 @@ class PartyDetails extends Component {
               <div className="form-group col-md-6">
                 <label htmlFor="reputation">Reputation:</label>
                 <select id="reputation" name="reputation" className="form-control" onChange={this.handleReputationChange} value={this.state.party.reputation}>
-                  {this.state.defaults.reputation.map(item => <ReputationOption key={item.key} item={item} />)}
+                  {defaults.reputation.map(item => <SelectOption key={item.key} value={item.key} text={item.key} />)}
                 </select>
               </div>
               <div className="form-group col-md-6">
                 <label htmlFor="modifier">Shop Price Modifier:</label>
-                <input type="text" name="modifier" id="modifier" className="form-control" readOnly value={this.state.defaults.reputation.find(o => o.key === this.state.party.reputation).value} />
+                <input type="text" name="modifier" id="modifier" className="form-control" readOnly value={defaults.reputation.find(o => o.key === this.state.party.reputation).value} />
               </div>
             </div>
             <div className="form-row">
@@ -129,19 +111,15 @@ class PartyDetails extends Component {
             </div>
             <div className="form-row align-items-top">
               <div className="form-group col-md-5">
-                <input type="text" name="achievements" id="achievements" className="form-control" placeholder="What have you achieved?" value={this.state.achievement} onChange={this.handleAchievementInputChange} />
+                <select id="achievements" name="achievements" className="form-control" value={this.state.achievement} onClick={this.handleAchievementChange}>
+                  <option value="" selected disabled>What have you achieved?</option>
+                  {defaults.achievements.filter(x => !this.state.party.achievements.includes(x)).map(item => <SelectOption key={item} value={item} text={item} />)}
+                </select>
               </div>
               <div className="form-group col-md-1">
-                <input type="button" className="btn btn-info btn-block" name="add-achievement" id="add-achievement" value="Add" onClick={this.handleAchievementAdd} />
+                <input type="button" className="btn btn-info btn-block" name="add-achievement" id="add-achievement" value="Add" disabled={!this.state.achievement} onClick={this.handleAchievementAdd} />
               </div>
-              <div className="form-group col-md-6">
-                <div className="card">
-                  <div className="card-header">Party Achievements</div>
-                  <ul className="list-group list-group-flush">
-                    {this.state.party.achievements.map(achievement => <AchievementElement key={achievement} achievement={achievement} deleteHandler={this.handleAchievementDelete} />)}
-                  </ul>
-                </div>
-              </div>
+              {this.state.party.achievements.length > 0 && <PartyAchievements deleteHandler={this.handleAchievementDelete} achievements={this.state.party.achievements} />}
             </div>
           </form>
         </div>
@@ -150,9 +128,20 @@ class PartyDetails extends Component {
   }
 }
 
-const ReputationOption = ({ item }) => ( <option value={item.key}>{item.key}</option> );
+const SelectOption = ({ value, text }) => ( <option value={value}>{text}</option> );
 
-const AchievementElement = ({ deleteHandler, achievement }) => (
+const PartyAchievements = ({ deleteHandler, achievements}) => (
+  <div className="form-group col-md-6">
+    <div className="card">
+      <div className="card-header">Party Achievements</div>
+      <ul className="list-group list-group-flush">
+        {achievements.map(achievement => <AchievementListItem key={achievement} achievement={achievement} deleteHandler={deleteHandler} />)}
+      </ul>
+    </div>
+  </div>
+);
+
+const AchievementListItem = ({ deleteHandler, achievement }) => (
   <li className="list-group-item clearfix">
       {achievement}
       <span className="float-right">
@@ -163,11 +152,17 @@ const AchievementElement = ({ deleteHandler, achievement }) => (
   </li>
 );
 
-ReputationOption.propTypes = {
-  item: PropTypes.array.isRequired
+SelectOption.propTypes = {
+  value: PropTypes.array.isRequired,
+  text: PropTypes.array.isRequired
 }
 
-AchievementElement.propTypes = {
+PartyAchievements.propTypes = {
+  deleteHandler: PropTypes.func.isRequired,
+  achievements: PropTypes.array.isRequired
+}
+
+AchievementListItem.propTypes = {
   deleteHandler: PropTypes.func.isRequired,
   achievement: PropTypes.string.isRequired
 }
