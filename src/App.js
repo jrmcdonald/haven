@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import {Typeahead} from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
+
 import { defaults }  from './defaults.json';
 
 import './App.css';
@@ -32,7 +36,7 @@ class PartyDetails extends Component {
         notes: '',
         achievements: []
       },
-      achievement: ''
+      selectedAchievement: []
     }
 
     const cachedParty = localStorage.getItem('party');
@@ -48,22 +52,20 @@ class PartyDetails extends Component {
   handleLocationChange = event => this.setState({ party: { ...this.state.party, location: event.target.value } }, () => this.updateLocalStorage());
   handleNotesChange = event => this.setState({ party: { ...this.state.party, notes: event.target.value } }, () => this.updateLocalStorage());
 
-  handleAchievementChange = e => { 
-    if (e.detail === 0) {
-      this.setState({ achievement: e.target.value });
-    }
-  }
+  handleAchievementChange = selected => this.setState({ selectedAchievement: selected });
 
   handleAchievementAdd = () => {
-    this.setState({ 
-      party: { 
-        ...this.state.party, 
-        achievements: this.state.party.achievements.concat([this.state.achievement])
-      } 
-    }, () => {
-      this.updateLocalStorage(); 
-      this.setState({ achievement: '' });
-    });
+    if (!this.state.party.achievements.includes(this.state.selectedAchievement[0])) {
+      this.setState({ 
+        party: { 
+          ...this.state.party, 
+          achievements: this.state.party.achievements.concat([this.state.selectedAchievement[0]])
+        } 
+      }, () => {
+        this.updateLocalStorage(); 
+        this.setState({ selectedAchievement: [] });
+      });
+    } 
   }
 
   handleAchievementDelete = achievement => {
@@ -111,13 +113,15 @@ class PartyDetails extends Component {
             </div>
             <div className="form-row align-items-top">
               <div className="form-group col-md-5">
-                <select id="achievements" name="achievements" className="form-control" value={this.state.achievement} onClick={this.handleAchievementChange}>
-                  <option value="" selected disabled>What have you achieved?</option>
-                  {defaults.achievements.filter(x => !this.state.party.achievements.includes(x)).map(item => <SelectOption key={item} value={item} text={item} />)}
-                </select>
+                <Typeahead
+                  onChange={this.handleAchievementChange}
+                  options={defaults.achievements}
+                  selected={this.state.selectedAchievement}
+                  placeholder='What have you achieved?'
+                />
               </div>
               <div className="form-group col-md-1">
-                <input type="button" className="btn btn-info btn-block" name="add-achievement" id="add-achievement" value="Add" disabled={!this.state.achievement} onClick={this.handleAchievementAdd} />
+                <input type="button" className="btn btn-info btn-block" name="add-achievement" id="add-achievement" value="Add" disabled={!this.state.selectedAchievement[0]} onClick={this.handleAchievementAdd} />
               </div>
               {this.state.party.achievements.length > 0 && <PartyAchievements deleteHandler={this.handleAchievementDelete} achievements={this.state.party.achievements} />}
             </div>
