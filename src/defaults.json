@@ -1,8 +1,34 @@
 {
   "defaults": {
     "achievements": [
-      "Achievement 1",
-      "Achievement 2"
+      "A Demon's Errand",
+      "A Map To Treasure",
+      "Across The Divide",
+      "An Invitation",
+      "Bad Business",
+      "Dark Bounty",
+      "Debt Collection",
+      "First Steps",
+      "Fish's Aid",
+      "Following Clues",
+      "Grave Job",
+      "High Sea Escort",
+      "Jekserah's Plans",
+      "Regthorn's Aid",
+      "Sin-Ra",
+      "Stonebreaker's Curse",
+      "Sun-Blessed",
+      "The Drake's Command",
+      "The Drake's Treasure",
+      "The Poison's Source",
+      "The Scepter And The Voice",
+      "The Voice's Command",
+      "The Voice's Treasure",
+      "Through The Nest",
+      "Through The Ruins",
+      "Through The Trench",
+      "Tremors",
+      "Water Staff"
     ],
     "reputation": [{
         "key": "+20",
