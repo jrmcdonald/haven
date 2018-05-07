@@ -10,7 +10,158 @@ import { defaults }  from './defaults.json';
 import './App.css';
 
 class App extends Component {
-  render() { return <PartyDetails /> }
+  render() { 
+    return (
+      <React.Fragment>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+          <a className="navbar-brand" href="/">Haven</a>
+          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarCollapse">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <a className="nav-link" href="/scenarios">Scenarios</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/party">Party</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/characters">Characters</a>
+              </li>
+            </ul>
+            <form className="form-inline">
+              <button className="btn btn-outline-success mr-2" type="submit">Save</button>
+              <button className="btn btn-outline-success mr-2" type="submit">Load</button>
+              <button className="btn btn-outline-danger mr-2" type="submit">Reset</button>
+            </form>
+          </div>
+        </nav>
+        <main role="main" className="container">
+          <div className="card mb-4">
+            <div className="card-header">Scenarios</div>
+            <div className="card-body">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Locked</th>
+                    <th>Complete</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Black Barrow</td>
+                    <td>
+                      <div className="form-check">
+                        <input className="form-check-input" type="checkbox" value="" id="scenario-1-unlocked" />
+                      </div>
+                    </td>
+                    <td>
+                      <div className="form-check">
+                        <input className="form-check-input" type="checkbox" value="" id="scenario-1-complete" />
+                      </div>
+                    </td>
+                    <td>
+                      <div className="form-group mb-0">
+                        <input className="form-control form-control-sm" type="text" id="scenarim-1-notes" rows="1" />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <PartyDetails />
+          <div className="card mb-4">
+            <div className="card-header">Characters</div>
+            <div className="card-body">
+              <table className="table mb-4">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Name</th>
+                    <th>XP</th>
+                    <th>Level</th>
+                    <th>Gold</th>
+                    <th>Retired</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Spellweaver</td>
+                    <td>Sharrow</td>
+                    <td>161</td>
+                    <td>4</td>
+                    <td>32</td>
+                    <td>
+                      <div className="form-check">
+                        <input className="form-check-input" type="checkbox" value="" id="character-1-retired" />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div className="card">
+                <div className="card-header">Sharrow <span>?class-icon?</span></div>
+                <div className="card-body">
+                  <form>
+                    <div className="form-row align-items-end">
+                      <div className="form-group col-md-3">
+                        <label htmlFor="experience-1">Experience:</label>
+                        <input type="text" id="experience-1" name="experience-1" className="form-control" readOnly />
+                      </div>
+                      <div className="form-group col-md-1">
+                        <input type="button" id="btn-inc-experience-1" name="btn-inc-experience-1" className="btn btn-info mr-2" value="+" />
+                        <input type="button" id="btn-dec-experience-1" name="btn-dec-experience-1" className="btn btn-info" value="-" />
+                      </div>
+                      <div className="form-group col-md-2">
+                        <label htmlFor="level-1">Level:</label>
+                        <input type="text" id="level-1" name="level-1" className="form-control" readOnly />
+                      </div>
+                      <div className="form-group col-md-2">
+                        <label htmlFor="gold-1">Gold:</label>
+                        <input type="text" id="gold-1" name="gold-1" className="form-control" readOnly />
+                      </div>
+                      <div className="form-group col-md-1">
+                        <input type="button" id="btn-inc-gold-1" name="btn-inc-gold-1" className="btn btn-info mr-2" value="+" />
+                        <input type="button" id="btn-dec-gold-1" name="btn-dec-gold-1" className="btn btn-info" value="-" />
+                      </div>
+                      <div className="form-group col-md-2">
+                        <label htmlFor="gold-donated-1">Gold Donated:</label>
+                        <input type="text" id="gold-donated-1" name="gold-donated-1" className="form-control" readOnly />
+                      </div>
+                      <div className="form-group col-md-1">
+                        <input type="button" id="btn-inc-gold-donated-1" name="btn-inc-gold-donated-1" className="btn btn-info mr-2" value="+" />
+                        <input type="button" id="btn-dec-gold-donated-1" name="btn-dec-gold-donated-1" className="btn btn-info" value="-" />
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <div className="form-group col-md-6">
+                        <label htmlFor="items-1">Items:</label>
+                        <textarea name="items-1" id="items-1" className="form-control" />
+                      </div>
+                      <div className="form-group col-md-6">
+                        <label htmlFor="notes-1">Notes:</label>
+                        <textarea name="notes-1" id="notes-1" className="form-control" />
+                      </div>
+                    </div>
+                    <div clasName="form-row clearfix">
+                        <input type="button" id="btn-delete-1" name="btn-delete-1" className="btn btn-outline-danger float-right mr-2" value="Delete" />
+                        <input type="button" id="btn-retire-1" name="btn-retire-1" className="btn btn-outline-success float-right mr-2" value="Retire" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </React.Fragment>
+    ) 
+  }
 }
 
 class PartyDetails extends Component {
@@ -79,7 +230,7 @@ class PartyDetails extends Component {
 
   render() {
     return (
-      <div className="card">
+      <div className="card mb-4">
         <div className="card-header">Party Details</div>
         <div className="card-body">
           <form>
