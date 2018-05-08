@@ -46,7 +46,7 @@ class App extends Component {
                   <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Locked</th>
+                    <th>Unlocked</th>
                     <th>Complete</th>
                     <th>Notes</th>
                   </tr>
@@ -54,7 +54,7 @@ class App extends Component {
                 <tbody>
                   <tr>
                     <th scope="row">1</th>
-                    <td>Black Barrow</td>
+                    <td><span className="blur">Black Barrow</span></td>
                     <td>
                       <div className="form-check">
                         <input className="form-check-input" type="checkbox" value="" id="scenario-1-unlocked" />
@@ -105,7 +105,7 @@ class App extends Component {
                   </tr>
                 </tbody>
               </table>
-              <div className="card">
+              <div className="card mb-4">
                 <div className="card-header">Sharrow <span>?class-icon?</span></div>
                 <div className="card-body">
                   <form>
@@ -158,6 +158,25 @@ class App extends Component {
               </div>
             </div>
           </div>
+            <div className="card">
+              <div className="card-header">Campaign Log</div>
+              <div className="card-body">
+                <div className="log">
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience. This is a much longer line than the others to show what the wrapping effect would be like inside the &lt;div&gt; tag.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
+                </div>
+              </div>
+            </div>
         </main>
       </React.Fragment>
     ) 
@@ -300,7 +319,7 @@ const AchievementListItem = ({ deleteHandler, achievement }) => (
   <li className="list-group-item clearfix">
       {achievement}
       <span className="float-right">
-        <span className="btn btn-xs btn-default" onClick={() => deleteHandler(achievement)}>
+        <span className="btn btn-default p-0" onClick={() => deleteHandler(achievement)}>
           <i className="far fa-trash-alt" aria-hidden="true"></i>
         </span>
       </span>
