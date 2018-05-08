@@ -4,6 +4,21 @@ body {
   font-family: sans-serif;
 }
 
-.btn-xs {
-  padding: 0;
+.blur {
+  filter: blur(5px);
+}
+
+.blur:hover {
+  filter: none;
+}
+
+div.log {
+  height: 150px;
+  overflow-y: auto;
+}
+
+div.log > p {
+  margin-bottom: 0px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: .75em;
 }
