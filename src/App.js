@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {array, func, string, object} from 'prop-types';
+import {array, func, string, integer, object} from 'prop-types';
 
 import moment from 'moment';
 
@@ -389,6 +389,47 @@ const AchievementListItem = ({ deleteHandler, achievement }) => (
 const sortDateDesc = (x,y) => moment.utc(x.timestamp).diff(y.timestamp);
 
 const calculateLevel = (exp) => { let l = 0; defaults.experience.forEach((v,i) => { if (exp >= v) l = i + 1; }); return l; }
+
+Main.propTypes = {
+  campaign: object.isRequired
+}
+
+ScenariosCard.propTypes = {
+  scenarios: array.isRequired,
+  scenarioUpdateHandler: func.isRequired
+}
+
+ScenariosTable.propTypes = {
+  scenarios: array.isRequired,
+  scenarioUpdateHandler: func.isRequired
+}
+
+ScenariosTableRow.propTypes = {
+  scenario: object.isRequired,
+  scenarioUpdateHandler: func.isRequired
+}
+
+CharactersCard.propTypes = {
+  characters: array.isRequired,
+  characterUpdateHandler: func.isRequired
+}
+
+CharactersTable.propTypes = {
+  characters: array.isRequired,
+  characterUpdateHandler: func.isRequired
+}
+
+CharactersTableRow.propTypes = {
+  index: integer.isRequired,
+  character: object.isRequired,
+  characterUpdateHandler: func.isRequired
+}
+
+CharacterDetailsCard.propTypes = {
+  index: integer.isRequired,
+  character: object.isRequired,
+  characterUpdateHandler: func.isRequired
+}
 
 CampaignLogCard.propTypes = {
   entries: array.isRequired
