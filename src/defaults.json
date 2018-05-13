@@ -1,5 +1,18 @@
 {
   "defaults": {
+    "nav": {
+      "links": [
+        { "href": "#scenarios", "text": "Scenarios" },
+        { "href": "#party", "text": "Party" },
+        { "href": "#characters", "text": "Characters" },
+        { "href": "#log", "text": "Campaign Log" }
+      ],
+      "buttons": [
+        { "handler": "saveHandler", "text": "Save", "class": "success" },
+        { "handler": "loadHandler", "text": "Load", "class": "success" },
+        { "handler": "resetHandler", "text": "Reset", "class": "danger" }
+      ]
+    },
     "experience": [ 0, 45, 95, 150, 210, 275, 345, 420, 500 ],
     "achievements": [
       "A Demon's Errand",

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {array, func, string, integer, object} from 'prop-types';
+import {array, func, string, number, object} from 'prop-types';
 
 import moment from 'moment';
 
@@ -12,10 +12,10 @@ import { defaults }  from './defaults.json';
 import './App.css';
 
 const CAMPAIGN = {
-  scenarios: [
-    { name: "Black Barrow", unlocked: true, complete: false, notes: '' },
-    { name: "Barrow Lair", unlocked: false, complete: false, notes: '' }
-  ],
+  scenarios: { 
+    1: { name: "Black Barrow", unlocked: true, blocked: false, complete: false, notes: '' },
+    2: { name: "Barrow Lair", unlocked: false, blocked: false, complete: false, notes: '' }
+  },
   characters: [
     { name: "Frieda", class: 5, experience: 150, gold: 94, donations: 0, items: '', notes: '', retired: false },
     { name: "Bob", class: 1, experience: 30, gold: 10, donations: 30, items: 'Iron Helmet', notes: 'Almost died :(', retired: false }
@@ -47,29 +47,29 @@ class App extends Component {
 
 const Header = () => (
   <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <a className="navbar-brand" href="/">Haven</a>
+    <a className="navbar-brand" href="#root">Haven</a>
     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"></span>
     </button>
     <div className="collapse navbar-collapse" id="navbarCollapse">
       <ul className="navbar-nav mr-auto">
-        <li className="nav-item">
-          <a className="nav-link" href="/scenarios">Scenarios</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="/party">Party</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="/characters">Characters</a>
-        </li>
+        {defaults.nav.links.map((link, index) => <NavLink key={index} link={link} />)}
       </ul>
       <form className="form-inline">
-        <button className="btn btn-outline-success mr-2" type="submit">Save</button>
-        <button className="btn btn-outline-success mr-2" type="submit">Load</button>
-        <button className="btn btn-outline-danger mr-2" type="submit">Reset</button>
+        {defaults.nav.buttons.map((button, index) => <NavButton key={index} button={button} />)}
       </form>
     </div>
   </nav>
+);
+
+const NavLink = ({ link }) => (
+  <li className="nav-item">
+    <a className="nav-link" href={link.href}>{link.text}</a>
+  </li>
+);
+
+const NavButton = ({ button }) => (
+  <button className={`btn btn-outline-${button.class} mr-2`} type="submit">{button.text}</button>
 );
 
 const Main = ({ campaign }) => (
@@ -82,10 +82,10 @@ const Main = ({ campaign }) => (
 );
 
 const ScenariosCard = ({ scenarios, scenarioUpdateHandler }) => (
-  <div className="card mb-4">
+  <div className="card mb-4" id="scenarios">
     <div className="card-header">Scenarios</div>
     <div className="card-body">
-      <ScenariosTable />
+      <ScenariosTable scenarios={scenarios} />
     </div>
   </div>
 );
@@ -97,33 +97,39 @@ const ScenariosTable = ({ scenarios, scenarioUpdateHandler }) => (
         <th>#</th>
         <th>Name</th>
         <th>Unlocked</th>
+        <th>Blocked</th>
         <th>Complete</th>
         <th>Notes</th>
       </tr>
     </thead>
     <tbody>
-      <ScenariosTableRow />
+      {Object.keys(scenarios).map((index) => <ScenariosTableRow key={index} index={index} scenario={scenarios[index]} />)}
     </tbody>
   </table>
 );
 
-const ScenariosTableRow = ({ scenario, scenarioUpdateHandler }) => (
+const ScenariosTableRow = ({ index, scenario, scenarioUpdateHandler }) => (
   <tr>
-    <th scope="row">1</th>
-    <td><span className="blur">Black Barrow</span></td>
+    <th scope="row">{index}</th>
+    <td><span className={scenario.unlocked ? '' : 'blur'}>{scenario.name}</span></td>
     <td>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="scenario-1-unlocked" />
+        <input className="form-check-input" type="checkbox" checked={scenario.unlocked} id={`scenario-${index}-unlocked`} />
       </div>
     </td>
     <td>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="scenario-1-complete" />
+        <input className="form-check-input" type="checkbox" value={scenario.blocked} id={`scenario-${index}-blocked`} />
+      </div>
+    </td>
+    <td>
+      <div className="form-check">
+        <input className="form-check-input" type="checkbox" value={scenario.complete} id={`scenario-${index}-complete`} />
       </div>
     </td>
     <td>
       <div className="form-group mb-0">
-        <input className="form-control form-control-sm" type="text" id="scenarim-1-notes" rows="1" />
+        <input className="form-control form-control-sm" type="text" value={scenario.notes} id={`scenario-${index}-notes`} />
       </div>
     </td>
   </tr>
@@ -195,7 +201,7 @@ class PartyCard extends Component {
 
   render() {
     return (
-      <div className="card mb-4">
+      <div className="card mb-4" id="party">
         <div className="card-header">Party Details</div>
         <div className="card-body">
           <form>
@@ -249,7 +255,7 @@ class PartyCard extends Component {
 }
 
 const CharactersCard = ({ characters, characterUpdateHandler }) => (
-  <div className="card mb-4">
+  <div className="card mb-4" id="characters">
     <div className="card-header">Characters</div>
     <div className="card-body">
       <CharactersTable characters={characters} />
@@ -348,7 +354,7 @@ const CharacterDetailsCard = ({ index, character, characterUpdateHandler }) => (
 );
 
 const CampaignLogCard = ({ entries }) => (
-  <div className="card mb-4">
+  <div className="card mb-4" id="log">
     <div className="card-header">Campaign Log</div>
     <div className="card-body">
       <div className="log">
@@ -394,6 +400,14 @@ Main.propTypes = {
   campaign: object.isRequired
 }
 
+NavLink.propTypes = {
+  link: object.isRequired
+}
+
+NavButton.propTypes = {
+  button: object.isRequired
+}
+
 ScenariosCard.propTypes = {
   scenarios: array.isRequired,
   scenarioUpdateHandler: func.isRequired
@@ -405,6 +419,7 @@ ScenariosTable.propTypes = {
 }
 
 ScenariosTableRow.propTypes = {
+  index: number.isRequired,
   scenario: object.isRequired,
   scenarioUpdateHandler: func.isRequired
 }
@@ -420,13 +435,13 @@ CharactersTable.propTypes = {
 }
 
 CharactersTableRow.propTypes = {
-  index: integer.isRequired,
+  index: number.isRequired,
   character: object.isRequired,
   characterUpdateHandler: func.isRequired
 }
 
 CharacterDetailsCard.propTypes = {
-  index: integer.isRequired,
+  index: number.isRequired,
   character: object.isRequired,
   characterUpdateHandler: func.isRequired
 }
