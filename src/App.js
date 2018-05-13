@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import {array, func, string, object} from 'prop-types';
+
+import moment from 'moment';
 
 import {Typeahead} from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -9,181 +11,125 @@ import { defaults }  from './defaults.json';
 
 import './App.css';
 
+const CAMPAIGN = {
+  scenarios: [
+    { name: "Black Barrow", unlocked: true, complete: false, notes: '' },
+    { name: "Barrow Lair", unlocked: false, complete: false, notes: '' }
+  ],
+  characters: [
+    { name: "Frieda", class: 5, experience: 150, gold: 94, donations: 0, items: '', notes: '', retired: false },
+    { name: "Bob", class: 1, experience: 30, gold: 10, donations: 30, items: 'Iron Helmet', notes: 'Almost died :(', retired: false }
+  ],
+  log: [
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 1.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 2.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 3.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 4.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 5.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 6.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 7.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 8.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 9.'},
+    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 10.'}
+  ]
+}
+
 class App extends Component {
   render() { 
     return (
       <React.Fragment>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-          <a className="navbar-brand" href="/">Haven</a>
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarCollapse">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <a className="nav-link" href="/scenarios">Scenarios</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/party">Party</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/characters">Characters</a>
-              </li>
-            </ul>
-            <form className="form-inline">
-              <button className="btn btn-outline-success mr-2" type="submit">Save</button>
-              <button className="btn btn-outline-success mr-2" type="submit">Load</button>
-              <button className="btn btn-outline-danger mr-2" type="submit">Reset</button>
-            </form>
-          </div>
-        </nav>
-        <main role="main" className="container">
-          <div className="card mb-4">
-            <div className="card-header">Scenarios</div>
-            <div className="card-body">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Unlocked</th>
-                    <th>Complete</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td><span className="blur">Black Barrow</span></td>
-                    <td>
-                      <div className="form-check">
-                        <input className="form-check-input" type="checkbox" value="" id="scenario-1-unlocked" />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="form-check">
-                        <input className="form-check-input" type="checkbox" value="" id="scenario-1-complete" />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="form-group mb-0">
-                        <input className="form-control form-control-sm" type="text" id="scenarim-1-notes" rows="1" />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <PartyDetails />
-          <div className="card mb-4">
-            <div className="card-header">Characters</div>
-            <div className="card-body">
-              <table className="table mb-4">
-                <thead>
-                  <tr>
-                    <th>Class</th>
-                    <th>Name</th>
-                    <th>XP</th>
-                    <th>Level</th>
-                    <th>Gold</th>
-                    <th>Retired</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Spellweaver</td>
-                    <td>Sharrow</td>
-                    <td>161</td>
-                    <td>4</td>
-                    <td>32</td>
-                    <td>
-                      <div className="form-check">
-                        <input className="form-check-input" type="checkbox" value="" id="character-1-retired" />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div className="card mb-4">
-                <div className="card-header">Sharrow <span>?class-icon?</span></div>
-                <div className="card-body">
-                  <form>
-                    <div className="form-row align-items-end">
-                      <div className="form-group col-md-3">
-                        <label htmlFor="experience-1">Experience:</label>
-                        <input type="text" id="experience-1" name="experience-1" className="form-control" readOnly />
-                      </div>
-                      <div className="form-group col-md-1">
-                        <input type="button" id="btn-inc-experience-1" name="btn-inc-experience-1" className="btn btn-info mr-2" value="+" />
-                        <input type="button" id="btn-dec-experience-1" name="btn-dec-experience-1" className="btn btn-info" value="-" />
-                      </div>
-                      <div className="form-group col-md-2">
-                        <label htmlFor="level-1">Level:</label>
-                        <input type="text" id="level-1" name="level-1" className="form-control" readOnly />
-                      </div>
-                      <div className="form-group col-md-2">
-                        <label htmlFor="gold-1">Gold:</label>
-                        <input type="text" id="gold-1" name="gold-1" className="form-control" readOnly />
-                      </div>
-                      <div className="form-group col-md-1">
-                        <input type="button" id="btn-inc-gold-1" name="btn-inc-gold-1" className="btn btn-info mr-2" value="+" />
-                        <input type="button" id="btn-dec-gold-1" name="btn-dec-gold-1" className="btn btn-info" value="-" />
-                      </div>
-                      <div className="form-group col-md-2">
-                        <label htmlFor="gold-donated-1">Gold Donated:</label>
-                        <input type="text" id="gold-donated-1" name="gold-donated-1" className="form-control" readOnly />
-                      </div>
-                      <div className="form-group col-md-1">
-                        <input type="button" id="btn-inc-gold-donated-1" name="btn-inc-gold-donated-1" className="btn btn-info mr-2" value="+" />
-                        <input type="button" id="btn-dec-gold-donated-1" name="btn-dec-gold-donated-1" className="btn btn-info" value="-" />
-                      </div>
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group col-md-6">
-                        <label htmlFor="items-1">Items:</label>
-                        <textarea name="items-1" id="items-1" className="form-control" />
-                      </div>
-                      <div className="form-group col-md-6">
-                        <label htmlFor="notes-1">Notes:</label>
-                        <textarea name="notes-1" id="notes-1" className="form-control" />
-                      </div>
-                    </div>
-                    <div clasName="form-row clearfix">
-                        <input type="button" id="btn-delete-1" name="btn-delete-1" className="btn btn-outline-danger float-right mr-2" value="Delete" />
-                        <input type="button" id="btn-retire-1" name="btn-retire-1" className="btn btn-outline-success float-right mr-2" value="Retire" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-            <div className="card">
-              <div className="card-header">Campaign Log</div>
-              <div className="card-body">
-                <div className="log">
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience. This is a much longer line than the others to show what the wrapping effect would be like inside the &lt;div&gt; tag.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                  <p>2018-01-15 17:32:00: Sharrow gained 32 experience.</p>
-                </div>
-              </div>
-            </div>
-        </main>
+        <Header />
+        <Main campaign={CAMPAIGN}/>
       </React.Fragment>
     ) 
   }
 }
 
-class PartyDetails extends Component {
+const Header = () => (
+  <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <a className="navbar-brand" href="/">Haven</a>
+    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <div className="collapse navbar-collapse" id="navbarCollapse">
+      <ul className="navbar-nav mr-auto">
+        <li className="nav-item">
+          <a className="nav-link" href="/scenarios">Scenarios</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="/party">Party</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="/characters">Characters</a>
+        </li>
+      </ul>
+      <form className="form-inline">
+        <button className="btn btn-outline-success mr-2" type="submit">Save</button>
+        <button className="btn btn-outline-success mr-2" type="submit">Load</button>
+        <button className="btn btn-outline-danger mr-2" type="submit">Reset</button>
+      </form>
+    </div>
+  </nav>
+);
+
+const Main = ({ campaign }) => (
+  <main role="main" className="container">
+    <ScenariosCard scenarios={campaign.scenarios} />
+    <PartyCard party={campaign.party} />
+    <CharactersCard characters={campaign.characters} />
+    <CampaignLogCard entries={campaign.log} />
+  </main>
+);
+
+const ScenariosCard = ({ scenarios, scenarioUpdateHandler }) => (
+  <div className="card mb-4">
+    <div className="card-header">Scenarios</div>
+    <div className="card-body">
+      <ScenariosTable />
+    </div>
+  </div>
+);
+
+const ScenariosTable = ({ scenarios, scenarioUpdateHandler }) => (
+  <table className="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Unlocked</th>
+        <th>Complete</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ScenariosTableRow />
+    </tbody>
+  </table>
+);
+
+const ScenariosTableRow = ({ scenario, scenarioUpdateHandler }) => (
+  <tr>
+    <th scope="row">1</th>
+    <td><span className="blur">Black Barrow</span></td>
+    <td>
+      <div className="form-check">
+        <input className="form-check-input" type="checkbox" value="" id="scenario-1-unlocked" />
+      </div>
+    </td>
+    <td>
+      <div className="form-check">
+        <input className="form-check-input" type="checkbox" value="" id="scenario-1-complete" />
+      </div>
+    </td>
+    <td>
+      <div className="form-group mb-0">
+        <input className="form-control form-control-sm" type="text" id="scenarim-1-notes" rows="1" />
+      </div>
+    </td>
+  </tr>
+);
+
+class PartyCard extends Component {
   constructor() {
     super();
 
@@ -302,9 +248,123 @@ class PartyDetails extends Component {
   }
 }
 
+const CharactersCard = ({ characters, characterUpdateHandler }) => (
+  <div className="card mb-4">
+    <div className="card-header">Characters</div>
+    <div className="card-body">
+      <CharactersTable characters={characters} />
+      {characters.map((character, index) => <CharacterDetailsCard key={index} index={index} character={character} />)}
+    </div>
+  </div>
+);
+
+const CharactersTable = ({ characters, characterUpdateHandler }) => (
+  <table className="table mb-4">
+    <thead>
+      <tr>
+        <th>Class</th>
+        <th>Name</th>
+        <th>XP</th>
+        <th>Level</th>
+        <th>Gold</th>
+        <th>Retired</th>
+      </tr>
+    </thead>
+    <tbody>
+      {characters.map((character, index) => <CharactersTableRow key={index} index={index} character={character} />)}
+    </tbody>
+  </table>
+);
+
+const CharactersTableRow = ({ index, character, characterUpdateHandler }) => (
+  <tr>
+    <td>{character.class}</td>
+    <td><a href={`#character-details-${index}`}>{character.name}</a></td>
+    <td>{character.experience}</td>
+    <td>{calculateLevel(character.experience)}</td>
+    <td>{character.gold}</td>
+    <td>
+      <div className="form-check">
+        <input className="form-check-input" type="checkbox" value={character.retired} id={`character-${index}-retired`} readOnly />
+      </div>
+    </td>
+  </tr>
+);
+
+const CharacterDetailsCard = ({ index, character, characterUpdateHandler }) => (
+  <div className="card mb-4">
+    <div className="card-header" id={`character-details-${index}`}>{character.name} <span>?class-icon?</span></div>
+    <div className="card-body">
+      <form>
+        <div className="form-row align-items-end">
+          <div className="form-group col-md-5">
+            <label htmlFor={`experience-${index}`}>Experience:</label>
+            <input type="text" id={`experience-${index}`} name={`experience-${index}`} className="form-control" value={character.experience} readOnly />
+          </div>
+          <div className="form-group col-md-1">
+            <input type="button" id={`btn-inc-experience-${index}`} name={`btn-inc-experience-${index}`} className="btn btn-info mr-2" value="+" />
+            <input type="button" id={`btn-dec-experience-${index}`} name={`btn-dec-experience-${index}`} className="btn btn-info" value="-" />
+          </div>
+          <div className="form-group col-md-6">
+            <label htmlFor={`level-${index}`}>Level:</label>
+            <input type="text" id={`level-${index}`} name={`level-${index}`} className="form-control" value={calculateLevel(character.experience)} readOnly />
+          </div>
+        </div>
+        <div className="form-row align-items-end">
+          <div className="form-group col-md-5">
+            <label htmlFor={`gold-${index}`}>Gold:</label>
+            <input type="text" id={`gold-${index}`} name={`gold-${index}`} className="form-control" value={character.gold} readOnly />
+          </div>
+          <div className="form-group col-md-1">
+            <input type="button" id={`btn-inc-gold-${index}`} name={`btn-inc-gold-${index}`} className="btn btn-info mr-2" value="+" />
+            <input type="button" id={`btn-dec-gold-${index}`} name={`btn-dec-gold-${index}`} className="btn btn-info" value="-" />
+          </div>
+          <div className="form-group col-md-5">
+            <label htmlFor={`gold-donated-${index}`}>Gold Donated:</label>
+            <input type="text" id={`gold-donated-${index}`} name={`gold-donated-${index}`} className="form-control" value={character.donations} readOnly />
+          </div>
+          <div className="form-group col-md-1">
+            <input type="button" id={`btn-inc-gold-donated-${index}`} name={`btn-inc-gold-donated-${index}`} className="btn btn-info mr-2" value="+" />
+            <input type="button" id={`btn-dec-gold-donated-${index}`} name={`btn-dec-gold-donated-${index}`} className="btn btn-info" value="-" />
+          </div>
+        </div>
+        <div className="form-row">
+          <div className="form-group col-md-6">
+            <label htmlFor={`items-${index}`}>Items:</label>
+            <textarea name={`items-${index}`} id={`items-${index}`} className="form-control" value={character.items} />
+          </div>
+          <div className="form-group col-md-6">
+            <label htmlFor={`notes-${index}`}>Notes:</label>
+            <textarea name={`notes-${index}`} id={`notes-${index}`} className="form-control" value={character.notes} />
+          </div>
+        </div>
+        <div className="form-row">
+            <input type="button" id={`btn-retire-${index}`} name={`btn-retire-${index}`} className="btn btn-outline-success ml-auto mr-2" value="Retire" />
+            <input type="button" id={`btn-delete-${index}`} name={`btn-delete-${index}`} className="btn btn-outline-danger mr-2" value="Delete" />
+        </div>
+      </form>
+    </div>
+  </div>
+);
+
+const CampaignLogCard = ({ entries }) => (
+  <div className="card mb-4">
+    <div className="card-header">Campaign Log</div>
+    <div className="card-body">
+      <div className="log">
+        {entries.sort(sortDateDesc).map(entry => <CampaignLogEntry key={entry.timestamp} entry={entry} />)}
+      </div>
+    </div>
+  </div>
+);
+
+const CampaignLogEntry = ({ entry }) => (
+  <p>{entry.timestamp}: {entry.text}</p>
+);
+
 const SelectOption = ({ value, text }) => ( <option value={value}>{text}</option> );
 
-const PartyAchievements = ({ deleteHandler, achievements}) => (
+const PartyAchievements = ({ deleteHandler, achievements }) => (
   <div className="form-group col-md-6">
     <div className="card">
       <div className="card-header">Party Achievements</div>
@@ -326,19 +386,31 @@ const AchievementListItem = ({ deleteHandler, achievement }) => (
   </li>
 );
 
+const sortDateDesc = (x,y) => moment.utc(x.timestamp).diff(y.timestamp);
+
+const calculateLevel = (exp) => { let l = 0; defaults.experience.forEach((v,i) => { if (exp >= v) l = i + 1; }); return l; }
+
+CampaignLogCard.propTypes = {
+  entries: array.isRequired
+}
+
+CampaignLogEntry.propTypes = {
+  entry: object.isRequired
+}
+
 SelectOption.propTypes = {
-  value: PropTypes.array.isRequired,
-  text: PropTypes.array.isRequired
+  value: string.isRequired,
+  text: string.isRequired
 }
 
 PartyAchievements.propTypes = {
-  deleteHandler: PropTypes.func.isRequired,
-  achievements: PropTypes.array.isRequired
+  deleteHandler: func.isRequired,
+  achievements: array.isRequired
 }
 
 AchievementListItem.propTypes = {
-  deleteHandler: PropTypes.func.isRequired,
-  achievement: PropTypes.string.isRequired
+  deleteHandler: func.isRequired,
+  achievement: string.isRequired
 }
 
 export default App;

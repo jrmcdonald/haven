@@ -1,5 +1,6 @@
 {
   "defaults": {
+    "experience": [ 0, 45, 95, 150, 210, 275, 345, 420, 500 ],
     "achievements": [
       "A Demon's Errand",
       "A Map To Treasure",
