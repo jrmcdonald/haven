@@ -11,35 +11,53 @@ import { defaults }  from './defaults.json';
 
 import './App.css';
 
-const CAMPAIGN = {
-  scenarios: { 
-    1: { name: "Black Barrow", unlocked: true, blocked: false, complete: false, notes: '' },
-    2: { name: "Barrow Lair", unlocked: false, blocked: false, complete: false, notes: '' }
-  },
-  characters: [
-    { name: "Frieda", class: 5, experience: 150, gold: 94, donations: 0, items: '', notes: '', retired: false },
-    { name: "Bob", class: 1, experience: 30, gold: 10, donations: 30, items: 'Iron Helmet', notes: 'Almost died :(', retired: false }
-  ],
-  log: [
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 1.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 2.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 3.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 4.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 5.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 6.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 7.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 8.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 9.'},
-    { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 10.'}
-  ]
-}
+class App extends Component { 
+  constructor() {
+    super();
 
-class App extends Component {
+    this.updateLocalStorage = this.updateLocalStorage.bind(this);
+    this.scenarioUpdateHandler = this.scenarioUpdateHandler.bind(this);
+
+    this.state = {
+      campaign: {
+        scenarios: defaults.scenarios,
+        characters: [],
+        log: []
+      }
+    }
+
+    const cachedCampaign = localStorage.getItem('campaign');
+
+    if (cachedCampaign) {
+      this.state.campaign = JSON.parse(cachedCampaign);
+    }
+  }
+
+  updateLocalStorage = () => { localStorage.setItem('campaign', JSON.stringify(this.state.campaign)) };
+
+  scenarioUpdateHandler = (event) => {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+
+    const i = target.getAttribute('data-index');
+    const scenario = Object.assign({}, this.state.campaign.scenarios[i], {[target.name]: value});
+
+    const logEntry = { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 1.'};
+  
+    this.setState(prevState => ({
+      campaign: {
+        ...prevState.campaign,
+        scenarios: [...prevState.campaign.scenarios.slice(0, i), scenario, ...prevState.campaign.scenarios.slice(i + 1)],
+        log: [ ...prevState.campaign.log, logEntry ]
+      }
+    }), () => this.updateLocalStorage());
+  };
+
   render() { 
     return (
       <React.Fragment>
         <Header />
-        <Main campaign={CAMPAIGN}/>
+        <Main campaign={this.state.campaign} scenarioUpdateHandler={this.scenarioUpdateHandler} />
       </React.Fragment>
     ) 
   }
@@ -72,20 +90,20 @@ const NavButton = ({ button }) => (
   <button className={`btn btn-outline-${button.class} mr-2`} type="submit">{button.text}</button>
 );
 
-const Main = ({ campaign }) => (
+const Main = ({ campaign, scenarioUpdateHandler }) => (
   <main role="main" className="container">
-    <ScenariosCard scenarios={campaign.scenarios} />
+    <ScenariosCard scenarios={campaign.scenarios} scenarioUpdateHandler={scenarioUpdateHandler} />
     <PartyCard party={campaign.party} />
     <CharactersCard characters={campaign.characters} />
     <CampaignLogCard entries={campaign.log} />
   </main>
 );
 
-const ScenariosCard = ({ scenarios, scenarioUpdateHandler }) => (
+const ScenariosCard = ({ ...props }) => (
   <div className="card mb-4" id="scenarios">
     <div className="card-header">Scenarios</div>
     <div className="card-body">
-      <ScenariosTable scenarios={scenarios} />
+      <ScenariosTable {...props} />
     </div>
   </div>
 );
@@ -103,7 +121,7 @@ const ScenariosTable = ({ scenarios, scenarioUpdateHandler }) => (
       </tr>
     </thead>
     <tbody>
-      {Object.keys(scenarios).map((index) => <ScenariosTableRow key={index} index={index} scenario={scenarios[index]} />)}
+      {scenarios.map((scenario, index) => <ScenariosTableRow key={index} index={index} scenario={scenario} scenarioUpdateHandler={scenarioUpdateHandler} />)}
     </tbody>
   </table>
 );
@@ -114,22 +132,22 @@ const ScenariosTableRow = ({ index, scenario, scenarioUpdateHandler }) => (
     <td><span className={scenario.unlocked ? '' : 'blur'}>{scenario.name}</span></td>
     <td>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" checked={scenario.unlocked} id={`scenario-${index}-unlocked`} />
+        <input className="form-check-input" type="checkbox" checked={scenario.unlocked} id={`scenario-${index}-unlocked`} name="unlocked" data-index={index} onChange={scenarioUpdateHandler} />
       </div>
     </td>
     <td>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value={scenario.blocked} id={`scenario-${index}-blocked`} />
+        <input className="form-check-input" type="checkbox" checked={scenario.blocked} id={`scenario-${index}-blocked`} name="blocked" data-index={index} onChange={scenarioUpdateHandler} />
       </div>
     </td>
     <td>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value={scenario.complete} id={`scenario-${index}-complete`} />
+        <input className="form-check-input" type="checkbox" checked={scenario.complete} id={`scenario-${index}-complete`} name="complete" data-index={index} onChange={scenarioUpdateHandler} />
       </div>
     </td>
     <td>
       <div className="form-group mb-0">
-        <input className="form-control form-control-sm" type="text" value={scenario.notes} id={`scenario-${index}-notes`} />
+        <input className="form-control form-control-sm" type="text" value={scenario.notes} id={`scenario-${index}-notes`} name="notes" data-index={index} onChange={scenarioUpdateHandler} />
       </div>
     </td>
   </tr>
@@ -397,7 +415,8 @@ const sortDateDesc = (x,y) => moment.utc(x.timestamp).diff(y.timestamp);
 const calculateLevel = (exp) => { let l = 0; defaults.experience.forEach((v,i) => { if (exp >= v) l = i + 1; }); return l; }
 
 Main.propTypes = {
-  campaign: object.isRequired
+  campaign: object.isRequired,
+  scenarioUpdateHandler: func.isRequired
 }
 
 NavLink.propTypes = {

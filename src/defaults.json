@@ -13,6 +13,10 @@
         { "handler": "resetHandler", "text": "Reset", "class": "danger" }
       ]
     },
+    "scenarios": [
+      { "name": "Black Barrow", "unlocked": true, "blocked": false, "complete": false, "notes": "" },
+      { "name": "Barrow Lair", "unlocked": false, "blocked": false, "complete": false, "notes": "" }
+    ],
     "experience": [ 0, 45, 95, 150, 210, 275, 345, 420, 500 ],
     "achievements": [
       "A Demon's Errand",
