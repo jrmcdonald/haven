@@ -35,22 +35,31 @@ class App extends Component {
 
   updateLocalStorage = () => { localStorage.setItem('campaign', JSON.stringify(this.state.campaign)) };
 
+  scenarioLogHandler = (scenario, name, value) => `${scenario} ${defaults.strings.scenarios[name][value]}.`
+
   scenarioUpdateHandler = (event) => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
     const i = target.getAttribute('data-index');
     const scenario = Object.assign({}, this.state.campaign.scenarios[i], {[target.name]: value});
-
-    const logEntry = { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: 'Log text 1.'};
   
     this.setState(prevState => ({
       campaign: {
         ...prevState.campaign,
         scenarios: [...prevState.campaign.scenarios.slice(0, i), scenario, ...prevState.campaign.scenarios.slice(i + 1)],
-        log: [ ...prevState.campaign.log, logEntry ]
       }
     }), () => this.updateLocalStorage());
+
+    if (target.type === 'checkbox') {
+      const logEntry = { timestamp: moment().format('YYYY-MM-DD HH:mm:ss'), text: this.scenarioLogHandler(scenario.name, target.name, value) };
+      this.setState(prevState => ({
+        campaign: {
+          ...prevState.campaign,
+          log: [ ...prevState.campaign.log, logEntry ]
+        }
+      }), () => this.updateLocalStorage());
+    }
   };
 
   render() { 

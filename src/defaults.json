@@ -1,5 +1,12 @@
 {
   "defaults": {
+    "strings": {
+      "scenarios": { 
+        "unlocked": { "true": "unlocked", "false": "locked" },
+        "blocked": { "true": "blocked", "false": "unblocked" },
+        "complete": { "true": "completed", "false": "made incomplete" }
+      }
+    },
     "nav": {
       "links": [
         { "href": "#scenarios", "text": "Scenarios" },
